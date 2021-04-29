@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_gray"
+    tools:context=".ui.settings.SettingsActivity">
+
+    <include
+        android:id="@+id/settings_toolbar"
+        layout="@layout/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/settings_profile_img_view"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_marginBottom="32dp"
+        android:src="@drawable/padrao"
+        app:civ_border_width="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/settings_name_ipt_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_toolbar"
+        app:layout_constraintVertical_bias="0.20"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/settings_name_ipt_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        android:background="@android:color/transparent"
+        app:endIconDrawable="@drawable/ic_edit_24"
+        app:endIconMode="custom"
+        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_profile_img_view">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/name" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:text="@string/name_field_caption"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_name_ipt_layout" />
+
+    <ImageButton
+        android:id="@+id/settings_camera_img_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/settings_profile_img_view"
+        app:layout_constraintEnd_toStartOf="@+id/settings_photo_lib_img_btn"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/settings_profile_img_view"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/ic_photo_camera"
+        android:onClick="onCameraButtonClick"/>
+
+    <ImageButton
+        android:id="@+id/settings_photo_lib_img_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/settings_profile_img_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/settings_camera_img_btn"
+        app:layout_constraintTop_toTopOf="@+id/settings_profile_img_view"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/ic_photo_library"
+        android:onClick="onPhotoLibraryButtonClick"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

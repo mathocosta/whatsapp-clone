@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">WhatsAppClone</string>
+    <string name="email_field_hint">Digite seu email</string>
+    <string name="password_field_hint">Digite sua senha</string>
+    <string name="login_button">Entrar</string>
+    <string name="sign_up_hint">Não possui conta? Cadastre-se</string>
+    <string name="name_field_hint">Digite seu nome</string>
+    <string name="sign_up_button">Cadastrar</string>
+    <string name="required_field_error">Campo obrigatório</string>
+    <string name="search_menu">Pesquisar</string>
+    <string name="logout_menu">Sair</string>
+    <string name="settings_menu">Configurações</string>
+    <string name="settings_title">Configurações</string>
+    <string name="name_field_caption">Esse nome ficará visível para seus contatos no WhatsApp</string>
+    <string name="name">Nome</string>
+    <string name="chats_tab_title">Conversas</string>
+    <string name="contacts_tab_title">Contatos</string>
+    <string name="send_message">Enviar mensagem</string>
+    <string name="search_hint">Pesquisar</string>
+    <string name="new_group">Novo grupo</string>
+    <string name="title_activity_group_select_members">Novo Grupo</string>
+    <string name="group_select_members_act_toolbar">%1$d de %2$d selecionados</string>
+    <string name="title_activity_create_group">Novo Grupo</string>
+    <string name="subtitle_create_group_act_toolbar">Escolha um nome para o grupo</string>
+    <string name="group_name">Nome do grupo</string>
+    <string name="optional_name_and_image">Defina uma nome e uma imagem (opcional)</string>
+    <string name="group_members_label">Participantes: %1$d</string>
+</resources>

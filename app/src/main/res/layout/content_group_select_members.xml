@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".ui.group.selectmembers.GroupSelectMembersActivity"
+    tools:showIn="@layout/activity_group_select_members">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/group_selected_rec_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:scrollbars="horizontal"
+        tools:itemCount="3"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/selected_member_list_item"
+        tools:orientation="horizontal" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/group_contacts_rec_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        tools:itemCount="6"
+        tools:listitem="@layout/chats_list_item" />
+</LinearLayout>
