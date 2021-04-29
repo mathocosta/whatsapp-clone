@@ -50,7 +50,7 @@ class SignUpActivity : AppCompatActivity() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Log.d("SIGN_UP", "createUserWithEmailAndPassword: isSuccessful")
-                    saveUseCase.saveUser(UserProfile(emailText, nameText))
+                    saveUseCase.saveUser(UserProfile(email = emailText, username = nameText))
                     showChats()
                 } else {
                     Log.w("SIGN_UP", "createUserWithEmailAndPassword: ", task.exception)
