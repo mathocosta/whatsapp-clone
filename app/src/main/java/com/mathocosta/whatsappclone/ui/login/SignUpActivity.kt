@@ -46,11 +46,14 @@ class SignUpActivity : AppCompatActivity() {
             return
         }
 
-        AuthGateway.auth.createUserWithEmailAndPassword(emailText, passwordText)
+        AuthGateway.auth
+            .createUserWithEmailAndPassword(emailText, passwordText)
+            .continueWithTask {
+                saveUseCase.saveUser(UserProfile(email = emailText, username = nameText))
+            }
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Log.d("SIGN_UP", "createUserWithEmailAndPassword: isSuccessful")
-                    saveUseCase.saveUser(UserProfile(email = emailText, username = nameText))
                     showChats()
                 } else {
                     Log.w("SIGN_UP", "createUserWithEmailAndPassword: ", task.exception)
