@@ -43,7 +43,7 @@ class ContactsListAdapter(private val clickListener: OnItemClickListener) :
                     listItemTitleTxtView.text = item.username
                     listItemSubtitleTxtView.text = item.email
                     if (item.photoUrl != null) {
-                        Glide.with(context).load(item.photoUrl)
+                        Glide.with(context).load(item.photoUrl).into(listItemImgView)
                     } else {
                         listItemImgView.setImageResource(R.drawable.padrao)
                     }

@@ -15,37 +15,22 @@ class SettingsViewModel : ViewModel() {
     private val getUserProfile = GetUserProfileUseCase()
     private val updateUserProfile = UpdateUserProfileUseCase()
 
-    private val currentUserProfile: MutableLiveData<UserProfile> by lazy {
-        MutableLiveData<UserProfile>()
-    }
+    private val _currentUserProfile = MutableLiveData<UserProfile?>()
 
-    fun loadUserProfile(): LiveData<UserProfile> {
+    val currentUserProfile: LiveData<UserProfile?>
+        get() = _currentUserProfile
+
+    init {
         viewModelScope.launch {
-            val userProfile = getUserProfile()
-            currentUserProfile.value = userProfile
+            _currentUserProfile.value = getUserProfile()
         }
-
-        return currentUserProfile
     }
 
     fun setProfileImage(imageBitmap: Bitmap) {
         viewModelScope.launch {
-            val imageUri = updateUserProfile.uploadProfileImage(imageBitmap)
-            currentUserProfile.value?.run {
-                val updatedProfile = copy(photoUrl = imageUri.toString())
-                //updateUserProfile.updateCurrentUserProfile(updatedProfile)
-                currentUserProfile.postValue(updatedProfile)
-            }
-        }
-    }
-
-    fun setProfileImage(imageUri: Uri) {
-        viewModelScope.launch {
-            val downloadUri = updateUserProfile.uploadProfileImage(imageUri)
-            currentUserProfile.value?.run {
-                val updatedProfile = copy(photoUrl = downloadUri.toString())
-                //updateUserProfile.updateCurrentUserProfile(updatedProfile)
-                currentUserProfile.postValue(updatedProfile)
+            _currentUserProfile.value?.let {
+                val updatedUserProfile = updateUserProfile(it, imageBitmap)
+                _currentUserProfile.value = updatedUserProfile
             }
         }
     }

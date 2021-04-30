@@ -4,7 +4,9 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
@@ -17,6 +19,7 @@ import com.mathocosta.whatsappclone.R
 import com.mathocosta.whatsappclone.databinding.ActivitySettingsBinding
 import kotlinx.coroutines.*
 
+// TODO: 4/30/21 Atualizar o nome do usuário quando sair da tela (ou após 2 segundos que digitar)
 class SettingsActivity : AppCompatActivity() {
     private val binding by lazy {
         ActivitySettingsBinding.inflate(layoutInflater)
@@ -43,11 +46,13 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun setupObserver() {
-        viewModel.loadUserProfile().observe(this) { userProfile ->
-            binding.settingsNameIptLayout.editText?.setText(userProfile.username)
-            Glide.with(this@SettingsActivity)
-                .load(userProfile.photoUrl)
-                .into(binding.settingsProfileImgView)
+        viewModel.currentUserProfile.observe(this) { userProfile ->
+            userProfile?.let {
+                binding.settingsNameIptLayout.editText?.setText(it.username)
+                Glide.with(this@SettingsActivity)
+                    .load(it.photoUrl)
+                    .into(binding.settingsProfileImgView)
+            }
         }
     }
 
@@ -84,13 +89,17 @@ class SettingsActivity : AppCompatActivity() {
             when (requestCode) {
                 IMAGE_CAPTURE_REQUEST_CODE -> {
                     val bitmap = data?.extras?.get("data") as Bitmap
-                    binding.settingsProfileImgView.setImageBitmap(bitmap)
                     viewModel.setProfileImage(bitmap)
                 }
                 PHOTO_LIBRARY_REQUEST_CODE -> {
                     val uri = data?.data as Uri
-                    binding.settingsProfileImgView.setImageURI(uri)
-                    viewModel.setProfileImage(uri)
+                    val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        val source = ImageDecoder.createSource(contentResolver, uri)
+                        ImageDecoder.decodeBitmap(source)
+                    } else {
+                        MediaStore.Images.Media.getBitmap(contentResolver, uri)
+                    }
+                    viewModel.setProfileImage(bitmap)
                 }
             }
         }

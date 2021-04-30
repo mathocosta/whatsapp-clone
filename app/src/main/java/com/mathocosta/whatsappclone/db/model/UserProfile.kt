@@ -5,7 +5,7 @@ import java.io.Serializable
 
 data class UserProfile(
     @Exclude var uid: String? = null,
-    val email: String = "",
-    val username: String = "",
-    val photoUrl: String? = null
+    var email: String = "",
+    var username: String = "",
+    var photoUrl: String? = null
 ) : Serializable
