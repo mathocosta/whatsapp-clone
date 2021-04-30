@@ -42,11 +42,11 @@ class SignUpViewModel : BaseLoginViewModel() {
                 Log.w("SIGN_UP", "signUp: ", ex)
                 when (ex) {
                     is FirebaseAuthWeakPasswordException ->
-                        _errorMessages.value?.apply { passwordError = ex.reason }
+                    _errorMessages.value = ErrorMessages(passwordError = ex.message)
                     is FirebaseAuthInvalidCredentialsException,
                     is FirebaseAuthUserCollisionException ->
-                        _errorMessages.value?.apply { emailError = ex.message }
-                    else -> _errorMessages.value?.apply { undefinedError = ex.message }
+                        _errorMessages.value = ErrorMessages(emailError = ex.message)
+                    else -> _errorMessages.value = ErrorMessages(undefinedError = ex.message)
                 }
             }
         }

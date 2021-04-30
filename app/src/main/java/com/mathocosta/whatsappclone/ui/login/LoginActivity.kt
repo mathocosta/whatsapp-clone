@@ -38,6 +38,16 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
             }
         }
+
+        viewModel.isLoading.observe(this) { isLoading ->
+            binding.loginProgressIndicator.visibility = if (isLoading) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+
+            binding.loginButton.isEnabled = !isLoading
+        }
     }
 
     override fun onStart() {

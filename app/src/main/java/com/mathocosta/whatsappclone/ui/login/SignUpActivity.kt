@@ -34,6 +34,16 @@ class SignUpActivity : AppCompatActivity() {
                 Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
             }
         }
+
+        viewModel.isLoading.observe(this) { isLoading ->
+            binding.signUpProgressIndicator.visibility = if (isLoading) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+
+            binding.signUpButton.isEnabled = !isLoading
+        }
     }
 
     private fun showChats() {

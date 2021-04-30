@@ -16,13 +16,16 @@ class LoginViewModel : BaseLoginViewModel() {
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
+            _isLoading.postValue(true)
             try {
                 loginUseCase.signIn(email, password)
 
                 Log.d("SIGN_IN", "login: isSuccessful")
+                _isLoading.postValue(false)
                 _navigateToHome.call()
             } catch (ex: Exception) {
                 Log.w("SIGN_IN", "login: ", ex)
+                _isLoading.postValue(false)
                 when (ex) {
                     is FirebaseAuthInvalidCredentialsException ->
                         _errorMessages.value = ErrorMessages(passwordError = ex.message)

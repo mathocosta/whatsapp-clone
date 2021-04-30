@@ -11,10 +11,15 @@ abstract class BaseLoginViewModel : ViewModel() {
     val navigateToHome: LiveData<Any>
         get() = _navigateToHome
 
-    protected val _errorMessages = MutableLiveData<ErrorMessages>(ErrorMessages())
+    protected val _errorMessages = MutableLiveData(ErrorMessages())
 
     val errorMessages: LiveData<ErrorMessages>
         get() = _errorMessages
+
+    protected val _isLoading = MutableLiveData(false)
+
+    val isLoading: LiveData<Boolean>
+        get() = _isLoading
 
     data class ErrorMessages(
         var emailError: String? = null,

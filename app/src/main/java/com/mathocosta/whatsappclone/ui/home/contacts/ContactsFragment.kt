@@ -5,8 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.mathocosta.whatsappclone.R
 import com.mathocosta.whatsappclone.databinding.FragmentContactsBinding
 import com.mathocosta.whatsappclone.db.model.UserProfile
 import com.mathocosta.whatsappclone.ui.chat.ChatActivity
@@ -29,12 +32,20 @@ class ContactsFragment : Fragment(), ContactsListAdapter.OnItemClickListener {
         _binding = FragmentContactsBinding.inflate(inflater, container, false)
 
         viewModel = ViewModelProvider(this).get(ContactsViewModel::class.java)
-        viewModel.getContacts().observe(this) {
+        viewModel.getContacts().observe(viewLifecycleOwner) {
             recViewAdapter.submitList(it)
         }
 
-        binding.contactsRecView.layoutManager = LinearLayoutManager(activity)
+        val layoutManager = LinearLayoutManager(activity)
+        val itemDecoration = DividerItemDecoration(activity, layoutManager.orientation).apply {
+            ResourcesCompat.getDrawable(resources, R.drawable.divider_item_layer, null)?.let {
+                setDrawable(it)
+            }
+         }
+
+        binding.contactsRecView.layoutManager = layoutManager
         binding.contactsRecView.adapter = recViewAdapter
+        binding.contactsRecView.addItemDecoration(itemDecoration)
 
         return binding.root
     }

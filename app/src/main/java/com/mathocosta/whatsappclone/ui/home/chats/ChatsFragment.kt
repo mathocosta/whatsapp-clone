@@ -6,8 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.mathocosta.whatsappclone.R
 import com.mathocosta.whatsappclone.databinding.FragmentChatsBinding
 import com.mathocosta.whatsappclone.db.model.Chat
 import com.mathocosta.whatsappclone.ui.chat.ChatActivity
@@ -29,9 +32,6 @@ class ChatsFragment : Fragment(), ChatsListAdapter.OnItemClickListener, Filterab
     ): View {
         _binding = FragmentChatsBinding.inflate(inflater, container, false)
 
-        binding.chatsRecView.layoutManager = LinearLayoutManager(activity)
-        binding.chatsRecView.adapter = recViewAdapter
-
         viewModel = ViewModelProvider(
             this,
             ChatsViewModelFactory(GetChatsUseCase())
@@ -40,6 +40,17 @@ class ChatsFragment : Fragment(), ChatsListAdapter.OnItemClickListener, Filterab
         viewModel.chatsLiveData.observe(viewLifecycleOwner) {
             recViewAdapter.setChatList(it)
         }
+
+        val layoutManager = LinearLayoutManager(activity)
+        val itemDecoration = DividerItemDecoration(activity, layoutManager.orientation).apply {
+            ResourcesCompat.getDrawable(resources, R.drawable.divider_item_layer, null)?.let {
+                setDrawable(it)
+            }
+        }
+
+        binding.chatsRecView.layoutManager = layoutManager
+        binding.chatsRecView.adapter = recViewAdapter
+        binding.chatsRecView.addItemDecoration(itemDecoration)
 
         return binding.root
     }
