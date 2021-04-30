@@ -28,14 +28,8 @@ class SignUpActivity : AppCompatActivity() {
         }
 
         viewModel.errorMessages.observe(this) { errorMessages ->
-            errorMessages.emailError?.let {
-                binding.signUpEmailIptLayout.error = it
-            }
-
-            errorMessages.passwordError?.let {
-                binding.signUpPasswordIptLayout.error = it
-            }
-
+            binding.signUpEmailIptLayout.error = errorMessages.emailError
+            binding.signUpPasswordIptLayout.error = errorMessages.passwordError
             errorMessages.undefinedError?.let {
                 Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
             }

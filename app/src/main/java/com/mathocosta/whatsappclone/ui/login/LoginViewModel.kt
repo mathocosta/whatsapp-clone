@@ -25,10 +25,11 @@ class LoginViewModel : BaseLoginViewModel() {
                 Log.w("SIGN_IN", "login: ", ex)
                 when (ex) {
                     is FirebaseAuthInvalidCredentialsException ->
-                        _errorMessages.value?.apply { passwordError = ex.message }
+                        _errorMessages.value = ErrorMessages(passwordError = ex.message)
                     is FirebaseAuthInvalidUserException ->
-                        _errorMessages.value?.apply { emailError = ex.message }
-                    else -> _errorMessages.value?.apply { undefinedError = ex.message }
+                        _errorMessages.value = ErrorMessages(emailError = ex.message)
+                    else ->
+                        _errorMessages.value = ErrorMessages(undefinedError = ex.message)
                 }
             }
         }

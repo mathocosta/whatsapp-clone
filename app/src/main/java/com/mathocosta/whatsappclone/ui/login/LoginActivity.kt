@@ -32,14 +32,8 @@ class LoginActivity : AppCompatActivity() {
         }
 
         viewModel.errorMessages.observe(this) { errorMessages ->
-            errorMessages.emailError?.let {
-                binding.loginEmailIptLayout.error = it
-            }
-
-            errorMessages.passwordError?.let {
-                binding.loginPasswordIptLayout.error = it
-            }
-
+            binding.loginEmailIptLayout.error = errorMessages.emailError
+            binding.loginPasswordIptLayout.error = errorMessages.passwordError
             errorMessages.undefinedError?.let {
                 Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
             }
