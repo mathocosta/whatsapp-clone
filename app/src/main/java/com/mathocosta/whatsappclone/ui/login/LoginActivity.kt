@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.mathocosta.whatsappclone.R
@@ -14,23 +15,41 @@ import com.mathocosta.whatsappclone.databinding.ActivityLoginBinding
 import com.mathocosta.whatsappclone.ui.home.HomeActivity
 
 class LoginActivity : AppCompatActivity() {
-    private val auth by lazy {
-        AuthGateway.auth
-    }
-
     private val binding by lazy {
         ActivityLoginBinding.inflate(layoutInflater)
     }
 
+    private lateinit var viewModel: LoginViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
+
+        viewModel.navigateToHome.observe(this) {
+            showChats()
+        }
+
+        viewModel.errorMessages.observe(this) { errorMessages ->
+            errorMessages.emailError?.let {
+                binding.loginEmailIptLayout.error = it
+            }
+
+            errorMessages.passwordError?.let {
+                binding.loginPasswordIptLayout.error = it
+            }
+
+            errorMessages.undefinedError?.let {
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onStart() {
         super.onStart()
 
-        if (auth.currentUser != null) {
+        if (AuthGateway.auth.currentUser != null) {
             showChats()
         }
     }
@@ -57,23 +76,6 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
-        auth.signInWithEmailAndPassword(emailText, passwordText)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.d("SIGN_UP", "signInWithEmailAndPassword: isSuccessful")
-                    showChats()
-                } else {
-                    Log.w("SIGN_UP", "signInWithEmailAndPassword: ", task.exception)
-                    task.exception?.let {
-                        when (it) {
-                            is FirebaseAuthInvalidCredentialsException ->
-                                binding.loginPasswordIptLayout.error = it.message
-                            is FirebaseAuthInvalidUserException ->
-                                binding.loginEmailIptLayout.error = it.message
-                            else -> Toast.makeText(this, it.message, Toast.LENGTH_SHORT)
-                        }
-                    }
-                }
-            }
+        viewModel.login(emailText, passwordText)
     }
 }

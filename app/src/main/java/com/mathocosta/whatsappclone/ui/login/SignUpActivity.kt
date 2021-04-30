@@ -3,28 +3,43 @@ package com.mathocosta.whatsappclone.ui.login
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import androidx.lifecycle.ViewModelProvider
 import com.mathocosta.whatsappclone.R
-import com.mathocosta.whatsappclone.auth.AuthGateway
 import com.mathocosta.whatsappclone.databinding.ActivitySignUpBinding
-import com.mathocosta.whatsappclone.db.SaveUserProfileUseCase
-import com.mathocosta.whatsappclone.db.model.UserProfile
 import com.mathocosta.whatsappclone.ui.home.HomeActivity
 
 class SignUpActivity : AppCompatActivity() {
-    private val saveUseCase = SaveUserProfileUseCase()
     private val binding by lazy {
         ActivitySignUpBinding.inflate(layoutInflater)
     }
 
+    private lateinit var viewModel: SignUpViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        viewModel = ViewModelProvider(this).get(SignUpViewModel::class.java)
+
+        viewModel.navigateToHome.observe(this) {
+            showChats()
+        }
+
+        viewModel.errorMessages.observe(this) { errorMessages ->
+            errorMessages.emailError?.let {
+                binding.signUpEmailIptLayout.error = it
+            }
+
+            errorMessages.passwordError?.let {
+                binding.signUpPasswordIptLayout.error = it
+            }
+
+            errorMessages.undefinedError?.let {
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun showChats() {
@@ -46,28 +61,6 @@ class SignUpActivity : AppCompatActivity() {
             return
         }
 
-        AuthGateway.auth
-            .createUserWithEmailAndPassword(emailText, passwordText)
-            .continueWithTask {
-                saveUseCase.saveUser(UserProfile(email = emailText, username = nameText))
-            }
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.d("SIGN_UP", "createUserWithEmailAndPassword: isSuccessful")
-                    showChats()
-                } else {
-                    Log.w("SIGN_UP", "createUserWithEmailAndPassword: ", task.exception)
-                    task.exception?.let {
-                        when (it) {
-                            is FirebaseAuthWeakPasswordException ->
-                                binding.signUpPasswordIptLayout.error = it.reason
-                            is FirebaseAuthInvalidCredentialsException,
-                            is FirebaseAuthUserCollisionException ->
-                                binding.signUpEmailIptLayout.error = it.message
-                            else -> Toast.makeText(this, it.message, Toast.LENGTH_SHORT)
-                        }
-                    }
-                }
-            }
+        viewModel.signUp(emailText, passwordText, nameText)
     }
 }
