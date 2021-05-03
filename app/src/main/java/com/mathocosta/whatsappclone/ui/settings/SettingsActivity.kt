@@ -9,17 +9,20 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.mathocosta.whatsappclone.R
 import com.mathocosta.whatsappclone.databinding.ActivitySettingsBinding
 import kotlinx.coroutines.*
 
-// TODO: 4/30/21 Atualizar o nome do usuário quando sair da tela (ou após 2 segundos que digitar)
 class SettingsActivity : AppCompatActivity() {
     private val binding by lazy {
         ActivitySettingsBinding.inflate(layoutInflater)
@@ -34,7 +37,8 @@ class SettingsActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
 
         setupActionBar()
-        setupObserver()
+        setupProfileObserver()
+        setupNameEdtTxtListener()
         askForPermissionsIfNeeded()
     }
 
@@ -45,7 +49,7 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    private fun setupObserver() {
+    private fun setupProfileObserver() {
         viewModel.currentUserProfile.observe(this) { userProfile ->
             userProfile?.let {
                 binding.settingsNameIptLayout.editText?.setText(it.username)
@@ -54,6 +58,27 @@ class SettingsActivity : AppCompatActivity() {
                     .into(binding.settingsProfileImgView)
             }
         }
+    }
+
+    private fun setupNameEdtTxtListener() {
+        binding.settingsNameIptLayout.editText?.addTextChangedListener(object : TextWatcher {
+            var needsUpdateNameJob: Job? = null
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                needsUpdateNameJob?.cancel()
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                needsUpdateNameJob = lifecycleScope.launch {
+                    delay(2000)
+                    Log.d("SETTINGS", "Start saving the username...")
+                    viewModel.setUsername(s.toString())
+                }
+            }
+        })
     }
 
     private fun askForPermissionsIfNeeded() {

@@ -1,7 +1,7 @@
 package com.mathocosta.whatsappclone.ui.settings
 
 import android.graphics.Bitmap
-import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,6 +31,20 @@ class SettingsViewModel : ViewModel() {
             _currentUserProfile.value?.let {
                 val updatedUserProfile = updateUserProfile(it, imageBitmap)
                 _currentUserProfile.value = updatedUserProfile
+            }
+        }
+    }
+
+    fun setUsername(username: String) {
+        viewModelScope.launch {
+            _currentUserProfile.value?.let {
+                it.username = username
+                try {
+                    updateUserProfile(it)
+                    Log.d("SETTINGS", "User profile updated")
+                } catch (ex: Exception) {
+                    Log.w("SETTINGS", ex)
+                }
             }
         }
     }
