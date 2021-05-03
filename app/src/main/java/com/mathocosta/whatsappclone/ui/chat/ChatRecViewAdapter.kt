@@ -1,5 +1,6 @@
 package com.mathocosta.whatsappclone.ui.chat
 
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import com.mathocosta.whatsappclone.databinding.MessageReceiverListItemBinding
 import com.mathocosta.whatsappclone.databinding.MessageSenderListItemBinding
 import com.mathocosta.whatsappclone.db.model.Message
 import com.mathocosta.whatsappclone.utils.toInt
+import java.util.*
 
 class ChatRecViewAdapter :
     ListAdapter<Message, ChatRecViewAdapter.MessageViewHolder>(ChatRecViewAdapter) {
@@ -32,6 +34,19 @@ class ChatRecViewAdapter :
 
     abstract class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         abstract fun bindTo(message: Message)
+
+        fun getFormattedTimeFrom(message: Message): String {
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = message.timestamp
+
+            val flags = if (DateUtils.isToday(message.timestamp)) {
+                DateUtils.FORMAT_SHOW_TIME
+            } else {
+                DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_SHOW_DATE
+            }
+
+            return DateUtils.formatDateTime(itemView.context, message.timestamp, flags)
+        }
     }
 
     class SenderViewHolder(private val binding: MessageSenderListItemBinding) :
@@ -46,6 +61,8 @@ class ChatRecViewAdapter :
                 } else {
                     msgSenderItemImgView.visibility = View.GONE
                 }
+
+                msgSenderItemTimeTxtView.text = getFormattedTimeFrom(message)
 
                 message.senderUserProfile?.let {
                     msgSenderItemNameTxtView.text = it.username
@@ -78,6 +95,8 @@ class ChatRecViewAdapter :
                 } else {
                     msgReceiverItemImgView.visibility = View.GONE
                 }
+
+                msgReceiverItemTimeTxtView.text = getFormattedTimeFrom(message)
 
                 message.senderUserProfile?.let {
                     msgReceiverItemNameTxtView.text = it.username
